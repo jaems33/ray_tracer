@@ -1,7 +1,6 @@
 use std::ops::{Add, AddAssign, Div, DivAssign, Index, Mul, MulAssign, Sub};
 
-
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Vec3 {
     values: [f64; 3],
 }
@@ -27,6 +26,10 @@ pub fn cross(u: &Vec3, v: &Vec3) -> Vec3 {
             u.x() * v.y() - u.y() * v.x()
         ]
     }
+}
+
+pub fn unit_vector(v: &Vec3) -> Vec3 {
+    v.clone() / v.length()
 }
 
 impl Vec3 {
@@ -292,5 +295,15 @@ mod tests {
         assert!(approx_eq!(f64, cross_product.x(), 0.0, ulps = 2));
         assert!(approx_eq!(f64, cross_product.y(), -3.0, ulps = 2));
         assert!(approx_eq!(f64, cross_product.z(), 2.0, ulps = 2));
+    }
+
+    #[test]
+    fn can_clone(){
+        let mut vec1 = Vec3::new(2.0, 2.0, 3.0);
+        let vec2 = vec1.clone();
+        vec1 *= 2.0;
+        assert!(!approx_eq!(f64, vec1.x(), vec2.x(), ulps = 2));
+        assert!(!approx_eq!(f64, vec1.y(), vec2.y(), ulps = 2));
+        assert!(!approx_eq!(f64, vec1.z(), vec2.z(), ulps = 2));
     }
 }
