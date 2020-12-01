@@ -1,4 +1,6 @@
 use std::ops::{Add, AddAssign, Div, DivAssign, Index, Mul, MulAssign, Sub};
+
+
 #[derive(Debug)]
 pub struct Vec3 {
     values: [f64; 3],
@@ -28,31 +30,31 @@ pub fn cross(u: &Vec3, v: &Vec3) -> Vec3 {
 }
 
 impl Vec3 {
-    fn new(e0: f64, e1: f64, e2: f64) -> Self {
+    pub fn new(e0: f64, e1: f64, e2: f64) -> Self {
         Vec3 {
             values: [e0, e1, e2],
         }
     }
-    fn new_empty() -> Self {
+    pub fn new_empty() -> Self {
         Vec3 {
             values: [0.0, 0.0, 0.0],
         }
     }
-    fn x(&self) -> f64 {
+    pub fn x(&self) -> f64 {
         self.values[0]
     }
-    fn y(&self) -> f64 {
+    pub fn y(&self) -> f64 {
         self.values[1]
     }
-    fn z(&self) -> f64 {
+    pub fn z(&self) -> f64 {
         self.values[2]
     }
 
-    fn length_squared(&self) -> f64 {
+    pub fn length_squared(&self) -> f64 {
         self.x() * self.x() + self.y() * self.y() + self.z() * self.z()
     }
 
-    fn length(&self) -> f64 {
+    pub fn length(&self) -> f64 {
         self.length_squared().sqrt()
     }
 }
