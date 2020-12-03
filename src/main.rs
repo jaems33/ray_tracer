@@ -2,18 +2,27 @@ mod lib;
 mod color;
 mod ray;
 
-fn hit_sphere(center: &lib::Point3, radius: f64, r: &ray::Ray) -> bool {
+fn hit_sphere(center: &lib::Point3, radius: f64, r: &ray::Ray) -> f64 {
     let oc = r.origin() - center.clone();
     let a = lib::dot(&r.direction(), &r.direction());
     let b = 2.0 * lib::dot(&oc, &r.direction());
     let c = lib::dot(&oc, &oc) - radius * radius;
     let discriminant = b * b - 4.0 * a * c;
-    discriminant > 0.0
+    match discriminant < 0.0 {
+        true => {
+            -1.0
+        }
+        false => {
+            (-b - discriminant.sqrt()) / 2.0 * a
+        }
+    }
 }
 
 fn ray_color(r: ray::Ray) -> lib::Color {
-    if hit_sphere(&lib::Point3::new(0.0, 0.0, -1.0), 0.5, &r) {
-        return lib::Color::new(1.0, 0.0, 0.0)
+    let t = hit_sphere(&lib::Point3::new(0.0, 0.0, -1.0), 0.5, &r);
+    if t > 0.0 {
+        let N = lib::unit_vector(&(r.at(t) - lib::Vec3::new(0.0, 0.0, -1.0)));
+        return 0.5 * lib::Color::new(N.x() + 1.0, N.y() + 1.0, N.z() + 1.0);
     }
     let unit_direction = lib::unit_vector(&r.direction());
     let t = 0.5 * (unit_direction.y() + 1.0);
