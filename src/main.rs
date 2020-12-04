@@ -3,17 +3,17 @@ mod color;
 mod ray;
 
 fn hit_sphere(center: &lib::Point3, radius: f64, r: &ray::Ray) -> f64 {
-    let oc = r.origin() - center.clone();
-    let a = lib::dot(&r.direction(), &r.direction());
-    let b = 2.0 * lib::dot(&oc, &r.direction());
-    let c = lib::dot(&oc, &oc) - radius * radius;
-    let discriminant = b * b - 4.0 * a * c;
+    let oc: lib::Vec3 = r.origin() - center.clone();
+    let a = r.direction().length_squared();
+    let half_b = lib::dot(&oc, &r.direction());
+    let c = oc.length_squared() - radius*radius;
+    let discriminant = half_b*half_b - a*c;
     match discriminant < 0.0 {
         true => {
             -1.0
         }
         false => {
-            (-b - discriminant.sqrt()) / 2.0 * a
+            (-half_b - discriminant.sqrt()) / a
         }
     }
 }
