@@ -18,6 +18,7 @@ fn hit_sphere(center: &lib::Point3, radius: f64, r: &ray::Ray) -> f64 {
     }
 }
 
+
 fn ray_color(r: ray::Ray) -> lib::Color {
     let t = hit_sphere(&lib::Point3::new(0.0, 0.0, -1.0), 0.5, &r);
     if t > 0.0 {
