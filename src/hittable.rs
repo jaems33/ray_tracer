@@ -10,13 +10,16 @@ pub struct HitRecord {
 }
 
 impl HitRecord {
-  fn set_face_normal(&self, r: &Ray, outward_normal: &Vec3) -> void {
+  pub fn set_face_normal(&self, r: &Ray, outward_normal: &Vec3) -> void {
     self.front_face = dot(r.direction(), outward_normal) < 0;
     if self.front_face {
       self.normal = outward_normal.clone();
     } else {
       self.normal = -(outward_normal.clone());
     }
+  }
+  pub fn get_t(){
+    return self.t;
   }
 }
 
