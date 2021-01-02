@@ -1,7 +1,6 @@
-use super::lib::{Vec3, Point3};
+use super::lib::{Vec3, Point3, dot};
 use super::ray::{Ray};
-mod lib;
-
+#[derive(Debug, Clone, Copy)]
 pub struct HitRecord {
   p: Point3,
   normal: Vec3,
@@ -10,15 +9,15 @@ pub struct HitRecord {
 }
 
 impl HitRecord {
-  pub fn set_face_normal(&self, r: &Ray, outward_normal: &Vec3) -> void {
-    self.front_face = dot(r.direction(), outward_normal) < 0;
+  pub fn set_face_normal(&mut self, r: &Ray, outward_normal: &Vec3) {
+    self.front_face = dot(&r.direction(), outward_normal) < 0.0;
     if self.front_face {
       self.normal = outward_normal.clone();
     } else {
-      self.normal = -(outward_normal.clone());
+      self.normal = -1.0 * outward_normal.clone();
     }
   }
-  pub fn get_t(){
+  pub fn get_t(&self) -> f64 {
     return self.t;
   }
 }

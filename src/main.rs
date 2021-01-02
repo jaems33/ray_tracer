@@ -1,6 +1,9 @@
 mod lib;
 mod color;
 mod ray;
+mod utils;
+mod hittable;
+mod hittable_list;
 
 fn hit_sphere(center: &lib::Point3, radius: f64, r: &ray::Ray) -> f64 {
     let oc: lib::Vec3 = r.origin() - center.clone();
