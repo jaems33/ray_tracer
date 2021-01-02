@@ -45,7 +45,7 @@ fn main() {
 
     // World
     let mut world = hittable_list::HittableList::new();
-    world.add(Rc::new(sphere::Sphere::new(&lib::Point3::new(0.0, 0.0, 1.0), 0.5)));
+    world.add(Rc::new(sphere::Sphere::new(&lib::Point3::new(0.0, 0.0, -1.0), 0.5)));
     world.add(Rc::new(sphere::Sphere::new(&lib::Point3::new(0.0, -100.5, -1.0), 100.0)));
 
     /* Camera */
