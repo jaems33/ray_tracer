@@ -1,9 +1,13 @@
+use hittable::Hittable;
+use std::rc::Rc;
+
 mod lib;
 mod color;
 mod ray;
 mod utils;
 mod hittable;
 mod hittable_list;
+mod sphere;
 
 fn hit_sphere(center: &lib::Point3, radius: f64, r: &ray::Ray) -> f64 {
     let oc: lib::Vec3 = r.origin() - center.clone();
@@ -22,15 +26,14 @@ fn hit_sphere(center: &lib::Point3, radius: f64, r: &ray::Ray) -> f64 {
 }
 
 
-fn ray_color(r: ray::Ray) -> lib::Color {
-    let t = hit_sphere(&lib::Point3::new(0.0, 0.0, -1.0), 0.5, &r);
-    if t > 0.0 {
-        let N = lib::unit_vector(&(r.at(t) - lib::Vec3::new(0.0, 0.0, -1.0)));
-        return 0.5 * lib::Color::new(N.x() + 1.0, N.y() + 1.0, N.z() + 1.0);
-    }
-    let unit_direction = lib::unit_vector(&r.direction());
-    let t = 0.5 * (unit_direction.y() + 1.0);
-    (1.0-t) * lib::Color::new(1.0, 1.0, 1.0) + t * lib::Color::new(0.5, 0.7, 1.0)
+fn ray_color(r: ray::Ray, world: &hittable_list::HittableList) -> lib::Color {
+   let mut rec = hittable::HitRecord::new();
+   if world.hit(&r, 0.0, utils::INFINITY, &mut rec) {
+       return 0.5 * (rec.get_normal() + lib::Color::new(1.0, 1.0, 1.0));
+   }
+   let unit_direction: lib::Vec3 = lib::unit_vector(&r.direction());
+   let t = 0.5 * (unit_direction.y() + 1.0);
+   (1.0-t)*lib::Color::new(1.0,1.0,1.0) + t * lib::Color::new(0.5, 0.7,1.0)
 }
 
 fn main() {
@@ -39,6 +42,11 @@ fn main() {
     let aspect_ratio = 16.0 / 9.0;
     let image_width = 1200;
     let image_height = (image_width as f64 / aspect_ratio) as i32;
+
+    // World
+    let mut world = hittable_list::HittableList::new();
+    world.add(Rc::new(sphere::Sphere::new(&lib::Point3::new(0.0, 0.0, 1.0), 0.5)));
+    world.add(Rc::new(sphere::Sphere::new(&lib::Point3::new(0.0, -100.5, -1.0), 100.0)));
 
     /* Camera */
     let viewport_height = 2.0;
@@ -58,7 +66,7 @@ fn main() {
             let u = i as f64 / (image_width-1) as f64;
             let v = j as f64 / (image_height-1) as f64;
             let r = ray::Ray::new(&origin, &(lower_left_corner + (u * horizontal) + (v * vertical - origin)));
-            let pixel_color = ray_color(r);
+            let pixel_color = ray_color(r, &world);
             let together = color::write_color(&pixel_color);
             output.push_str(&together);
         }
